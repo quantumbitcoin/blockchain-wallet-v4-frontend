@@ -1,6 +1,7 @@
 import { curry, compose, lensProp, forEach, addIndex, over } from 'ramda'
 import { mapped } from 'ramda-lens'
 import BitcoinCash from 'bitcoinforksjs-lib'
+import { addressToScript } from '../utils/btc'
 import * as Coin from '../coinSelection/coin.js'
 import { fromCashAddr, isCashAddr } from '../utils/bch'
 import { addHDWalletWIFS, addLegacyWIFS } from './wifs.js'
@@ -84,6 +85,7 @@ export const signWithWIF = curry((network, coinDust, selection) =>
 
 export const signWithLockbox = function*(
   selection,
+  coinDust,
   transport,
   scrambleKey,
   changeIndex,
@@ -105,15 +107,30 @@ export const signWithLockbox = function*(
     return hex.length > 1 ? hex : '0' + hex
   }
 
+  selection.outputs.push(coinDust)
   let outputs = intToHex(selection.outputs.length)
   selection.outputs.map(coin => {
     let amount = Buffer.alloc(8)
+    let script =
+      typeof coin.script === 'string'
+        ? addressToScript(coin.address)
+        : coin.script
     amount.writeUInt32LE(coin.value)
     outputs +=
       amount.toString('hex') +
-      intToHex(coin.script.length) +
+      intToHex(script.length) +
       coin.script.toString('hex')
   })
+
+  let tx_index = Buffer.alloc(4)
+  tx_index.writeUInt32LE(coinDust.index)
+
+  const multisigInputs = [
+    {
+      txHash: coinDust.txHashLittleEndian,
+      output_index: tx_index.toString('hex')
+    }
+  ]
 
   const hashType =
     BitcoinCash.Transaction.SIGHASH_ALL |
@@ -128,7 +145,9 @@ export const signWithLockbox = function*(
     hashType,
     undefined,
     undefined,
-    ['abc']
+    ['abc'],
+    undefined,
+    multisigInputs
   )
   const txId = crypto
     .sha256(crypto.sha256(Buffer.from(txHex, 'hex')))

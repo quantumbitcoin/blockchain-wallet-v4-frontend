@@ -54,6 +54,7 @@ export const isCoin = is(Coin)
 export const value = Coin.define('value')
 export const script = Coin.define('script')
 export const txHash = Coin.define('txHash')
+export const txHashLittleEndian = Coin.define('txHashLittleEndian')
 export const index = Coin.define('index')
 export const address = Coin.define('address')
 export const priv = Coin.define('priv')
@@ -73,6 +74,7 @@ export const fromJS = (o, network) => {
   return new Coin({
     value: parseInt(o.value),
     script: o.script ? o.script : addressToScript(o.address, network),
+    txHashLittleEndian: o.tx_hash,
     txHash: o.tx_hash_big_endian,
     index: o.tx_output_n,
     change: o.change || false,
