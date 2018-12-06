@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import media from 'services/ResponsiveService'
-import { Button, Text } from 'blockchain-info-components'
+import { Button, Image, Text } from 'blockchain-info-components'
 import { FaqMessage, FormGroup } from 'components/Form'
 
 export const Form = styled.form`
@@ -145,6 +145,7 @@ export const FieldMimic = styled.div`
 `
 
 export const IdentityVerificationForm = styled(Form)`
+  margin-top: 12px;
   height: 100%;
 `
 
@@ -186,4 +187,18 @@ export const BackButton = styled(Button)`
   color: ${props => props.theme['white']};
   background-color: ${props => props.theme['gray-2']};
   border-color: ${props => props.theme['gray-2']};
+`
+
+export const IdentityVerificationImage = styled(Image)`
+  margin-top: 40px;
+  margin-bottom: 40px;
+`
+export const Footer = styled.div`
+  width: 60%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  ${media.mobile`
+    width: 100%;
+  `};
 `
