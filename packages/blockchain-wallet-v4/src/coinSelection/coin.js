@@ -52,6 +52,7 @@ export class Coin extends Type {
 
 export const isCoin = is(Coin)
 export const value = Coin.define('value')
+export const valueHex = Coin.define('valueHex')
 export const script = Coin.define('script')
 export const txHash = Coin.define('txHash')
 export const txHashLittleEndian = Coin.define('txHashLittleEndian')
@@ -73,6 +74,7 @@ export const selectPath = view(path)
 export const fromJS = (o, network) => {
   return new Coin({
     value: parseInt(o.value),
+    valueHex: o.value_hex,
     script: o.script ? o.script : addressToScript(o.address, network),
     txHashLittleEndian: o.tx_hash,
     txHash: o.tx_hash_big_endian,

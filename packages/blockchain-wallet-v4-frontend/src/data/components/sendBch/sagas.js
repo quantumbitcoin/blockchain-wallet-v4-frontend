@@ -270,6 +270,8 @@ export default ({ coreSagas }) => {
       // Close modals
       yield put(actions.modals.closeAllModals())
     } catch (e) {
+      // eslint-disable-next-line
+      console.log(e)
       yield put(stopSubmit(FORM))
       // Set errors
       if (fromType === ADDRESS_TYPES.LOCKBOX) {

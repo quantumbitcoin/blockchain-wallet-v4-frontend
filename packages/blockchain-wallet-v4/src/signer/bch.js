@@ -127,8 +127,19 @@ export const signWithLockbox = function*(
 
   const multisigInputs = [
     {
-      txHash: coinDust.txHashLittleEndian,
-      output_index: tx_index.toString('hex')
+      prevout: Buffer.from(
+        coinDust.txHashLittleEndian + tx_index.toString('hex'),
+        'hex'
+      ),
+      value: Buffer.from(
+        coinDust.txHashLittleEndian +
+          tx_index.toString('hex') +
+          coinDust.valueHex,
+        'hex'
+      ),
+      trustedInput: false,
+      script: Buffer.alloc(0),
+      sequence: BitcoinCash.Transaction.DEFAULT_SEQUENCE
     }
   ]
 
